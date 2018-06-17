@@ -16,10 +16,10 @@ from time import sleep
 #os.getcwd()
 os.chdir('c:\\Users\Roman\Documents\HU\ANLY 699-90 Applied Project\Project')
 
-consumer_key = 'EQmYaOCM8DeJp19ueM6C8tnX9'
-consumer_secret = 'Zr3PCnu9WtqSbTtahsZLTZpHMs05xikRSGMXpVANxub7vuRx1N'
-access_token = '1892483208-i4ExWrXexQdIPaKUlYQhWXQJ3ixe6hXtJQBA6IF'
-access_token_secret = 'A30aFgoZZ4j5Ex4bvRsyB4cRDvZzyH7yoe2L1f3by6tSY'
+consumer_key = 'xxxxxxxxxx'
+consumer_secret = 'xxxxxxxxxx'
+access_token = 'xxxxxxxxxx'
+access_token_secret = 'xxxxxxxxxx'
 
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
