@@ -7,16 +7,23 @@ In recent years, Twitter has become a popular microblogging tool for millions of
 
 ## File descriptions (Project branch)
 
-# Python files
+### Python files
 train8: train neural network with prelabeled training data 
+
 eval10_test: test results of trained neural network with prelabeled test set
+
 twitter10: retrieve tweets
+
 twitter_cleaning_v10: clean retrieved tweets
+
 eval_run2: function that predicts sentiment of cleaned twitter data when called
+
 eval7_prepare: calls eval_run2 to predict sentiment in tweets
 
-# R files
+### R files
 sentiment_xxx: Plot sentiment, volume, price and find correlations and causative relationships
+
 corr_analysis: find correlations among sentiment and price for each cryptocurrency
+
 sent_distr: Bar plot of the number of negative, neutral, and positive tweets across all cryptocurrencies
 
