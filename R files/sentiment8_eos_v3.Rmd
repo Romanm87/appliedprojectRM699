@@ -1,0 +1,324 @@
+---
+title: "Sentiment EOS"
+author: "Roman"
+date: "June 11, 2018"
+output: html_document
+---
+
+```{r setup, message=FALSE}
+
+library(ggplot2)
+setwd("~/HU/ANLY 699-90 Applied Project/Sentiment data")
+
+########## CHANGE CODE FOR DIFFERNT DATA ##########
+dat = read.csv('eos_all_pred.csv')
+dat_1 = read.csv('eos_04-25(1)_pred.csv')
+########## ########## ########## ########## ##########
+
+colnames(dat) <- c("date_time","tweet","sent"); colnames(dat_1) <- c("date_time","tweet","sent") 
+dat$date_time = rev(dat$date_time); dat_1$date_time = rev(dat_1$date_time) #reverse order
+dat$tweet = rev(dat$tweet); dat_1$tweet = rev(dat_1$tweet)
+dat$sent = rev(dat$sent); dat_1$sentnt = rev(dat_1$sent)
+#function to calculate n tweets moving average sentiment:
+ma <- function(x, n){
+  res = x
+  for(i in n:length(x)){
+    res[i] = mean(x[(i-n):i])
+  }
+  res
+}
+n = nrow(dat_1) #moving average over number of tweets on first day
+dat$sentiment <- ma(dat$sent, n)
+dat$dupl <- duplicated(dat$date_time); dat_1$dupl <- duplicated(dat_1$date_time)
+dat = subset(dat, dat$dupl == FALSE); dat_1 = subset(dat_1, dat_1$dupl == FALSE)
+n_1 = nrow(dat_1) #number of tweets on first day
+dat$date_time <- factor(dat$date_time, levels = dat$date_time)
+dat <- dat[(n_1+1):nrow(dat),] #<-start moving average once enough data points collected
+
+########## CHANGE CODE FOR DIFFERNT DATA ##########
+write.csv(dat,"eos_processed.csv")
+########## ########## ########## ########## ##########
+
+dat$row_index = 1:nrow(dat)
+dat$date_time_lab = matrix(0, nrow(dat), 1)
+for (i in dat$row_index) {
+  if(round(i/1500)==i/1500){dat$date_time_lab[i] = as.character(dat$date_time[i])} else {dat$date_time_lab[i] = " "}
+}
+ggplot(dat, aes(x=dat$date_time, y=dat$sentiment, group=1, label = dat$date_time_lab)) + geom_line() +
+  geom_text(labels = dat$date_time_lab,  vjust = 3, size=3, position ="identity")+
+  theme(axis.text.x=element_blank()) +
+########## CHANGE CODE FOR DIFFERNT DATA ##########
+  xlab("Date / time") + ylab("Sentiment") + ggtitle("EOS Sentiment") 
+########## ########## ########## ########## ##########
+
+```
+
+
+```{r, message=FALSE, include=FALSE}
+
+#twitter time 4 hours ahead (bigben +5 hours - 1 hour)
+index = matrix(0, 14, 1)
+if (which(dat$date_time == '4/26/2018 4:00') != 0){index[1] = which(dat$date_time == '4/26/2018 4:00')} else if
+  (which(dat$date_time == '4/26/2018 4:01') != 0){index[1] = which(dat$date_time == '4/26/2018 4:01')} else if
+  (which(dat$date_time == '4/26/2018 4:02') != 0){index[1] = which(dat$date_time == '4/26/2018 4:02')} else if
+  (which(dat$date_time == '4/26/2018 4:03') != 0){index[1] = which(dat$date_time == '4/26/2018 4:03')} else if
+  (which(dat$date_time == '4/26/2018 4:04') != 0){index[1] = which(dat$date_time == '4/26/2018 4:04')} else if
+  (which(dat$date_time == '4/26/2018 4:05') != 0){index[1] = which(dat$date_time == '4/26/2018 4:05')} else if
+  (which(dat$date_time == '4/26/2018 4:06') != 0){index[1] = which(dat$date_time == '4/26/2018 4:06')} else if
+  (which(dat$date_time == '4/26/2018 4:07') != 0){index[1] = which(dat$date_time == '4/26/2018 4:07')} else if
+  (which(dat$date_time == '4/26/2018 4:08') != 0){index[1] = which(dat$date_time == '4/26/2018 4:08')} else if
+  (which(dat$date_time == '4/26/2018 4:09') != 0){index[1] = which(dat$date_time == '4/26/2018 4:09')} else if
+  (which(dat$date_time == '4/26/2018 4:10') != 0){index[1] = which(dat$date_time == '4/26/2018 4:10')} else if
+  (which(dat$date_time == '4/26/2018 4:11') != 0){index[1] = which(dat$date_time == '4/26/2018 4:11')} else if
+  (which(dat$date_time == '4/26/2018 4:12') != 0){index[1] = which(dat$date_time == '4/26/2018 4:12')} 
+if (which(dat$date_time == '4/27/2018 4:00') != 0){index[2] = which(dat$date_time == '4/27/2018 4:00')} else if
+  (which(dat$date_time == '4/27/2018 4:01') != 0){index[2] = which(dat$date_time == '4/27/2018 4:01')} else if
+  (which(dat$date_time == '4/27/2018 4:02') != 0){index[2] = which(dat$date_time == '4/27/2018 4:02')} else if
+  (which(dat$date_time == '4/27/2018 4:03') != 0){index[2] = which(dat$date_time == '4/27/2018 4:03')} else if
+  (which(dat$date_time == '4/27/2018 4:04') != 0){index[2] = which(dat$date_time == '4/27/2018 4:04')} else if
+  (which(dat$date_time == '4/27/2018 4:05') != 0){index[2] = which(dat$date_time == '4/27/2018 4:05')} else if
+  (which(dat$date_time == '4/27/2018 4:06') != 0){index[2] = which(dat$date_time == '4/27/2018 4:06')} else if
+  (which(dat$date_time == '4/27/2018 4:07') != 0){index[2] = which(dat$date_time == '4/27/2018 4:07')} else if
+  (which(dat$date_time == '4/27/2018 4:08') != 0){index[2] = which(dat$date_time == '4/27/2018 4:08')} else if
+  (which(dat$date_time == '4/27/2018 4:09') != 0){index[2] = which(dat$date_time == '4/27/2018 4:09')} else if
+  (which(dat$date_time == '4/27/2018 4:10') != 0){index[2] = which(dat$date_time == '4/27/2018 4:10')} else if
+  (which(dat$date_time == '4/27/2018 4:11') != 0){index[2] = which(dat$date_time == '4/27/2018 4:11')} else if
+  (which(dat$date_time == '4/27/2018 4:12') != 0){index[2] = which(dat$date_time == '4/27/2018 4:12')} 
+if (which(dat$date_time == '4/28/2018 4:00') != 0){index[3] = which(dat$date_time == '4/28/2018 4:00')} else if
+  (which(dat$date_time == '4/28/2018 4:01') != 0){index[3] = which(dat$date_time == '4/28/2018 4:01')} else if
+  (which(dat$date_time == '4/28/2018 4:02') != 0){index[3] = which(dat$date_time == '4/28/2018 4:02')} else if
+  (which(dat$date_time == '4/28/2018 4:03') != 0){index[3] = which(dat$date_time == '4/28/2018 4:03')} else if
+  (which(dat$date_time == '4/28/2018 4:04') != 0){index[3] = which(dat$date_time == '4/28/2018 4:04')} else if
+  (which(dat$date_time == '4/28/2018 4:05') != 0){index[3] = which(dat$date_time == '4/28/2018 4:05')} else if
+  (which(dat$date_time == '4/28/2018 4:06') != 0){index[3] = which(dat$date_time == '4/28/2018 4:06')} else if
+  (which(dat$date_time == '4/28/2018 4:07') != 0){index[3] = which(dat$date_time == '4/28/2018 4:07')} else if
+  (which(dat$date_time == '4/28/2018 4:08') != 0){index[3] = which(dat$date_time == '4/28/2018 4:08')} else if
+  (which(dat$date_time == '4/28/2018 4:09') != 0){index[3] = which(dat$date_time == '4/28/2018 4:09')} else if
+  (which(dat$date_time == '4/28/2018 4:10') != 0){index[3] = which(dat$date_time == '4/28/2018 4:10')} else if
+  (which(dat$date_time == '4/28/2018 4:11') != 0){index[3] = which(dat$date_time == '4/28/2018 4:11')} else if
+  (which(dat$date_time == '4/28/2018 4:12') != 0){index[3] = which(dat$date_time == '4/28/2018 4:12')} 
+if (which(dat$date_time == '4/29/2018 4:00') != 0){index[4] = which(dat$date_time == '4/29/2018 4:00')} else if
+  (which(dat$date_time == '4/29/2018 4:01') != 0){index[4] = which(dat$date_time == '4/29/2018 4:01')} else if
+  (which(dat$date_time == '4/29/2018 4:02') != 0){index[4] = which(dat$date_time == '4/29/2018 4:02')} else if
+  (which(dat$date_time == '4/29/2018 4:03') != 0){index[4] = which(dat$date_time == '4/29/2018 4:03')} else if
+  (which(dat$date_time == '4/29/2018 4:04') != 0){index[4] = which(dat$date_time == '4/29/2018 4:04')} else if
+  (which(dat$date_time == '4/29/2018 4:05') != 0){index[4] = which(dat$date_time == '4/29/2018 4:05')} else if
+  (which(dat$date_time == '4/29/2018 4:06') != 0){index[4] = which(dat$date_time == '4/29/2018 4:06')} else if
+  (which(dat$date_time == '4/29/2018 4:07') != 0){index[4] = which(dat$date_time == '4/29/2018 4:07')} else if
+  (which(dat$date_time == '4/29/2018 4:08') != 0){index[4] = which(dat$date_time == '4/29/2018 4:08')} else if
+  (which(dat$date_time == '4/29/2018 4:09') != 0){index[4] = which(dat$date_time == '4/29/2018 4:09')} else if
+  (which(dat$date_time == '4/29/2018 4:10') != 0){index[4] = which(dat$date_time == '4/29/2018 4:10')} else if
+  (which(dat$date_time == '4/29/2018 4:11') != 0){index[4] = which(dat$date_time == '4/29/2018 4:11')} else if
+  (which(dat$date_time == '4/29/2018 4:12') != 0){index[4] = which(dat$date_time == '4/29/2018 4:12')} 
+if (which(dat$date_time == '4/30/2018 4:00') != 0){index[5] = which(dat$date_time == '4/30/2018 4:00')} else if
+  (which(dat$date_time == '4/30/2018 4:01') != 0){index[5] = which(dat$date_time == '4/30/2018 4:01')} else if
+  (which(dat$date_time == '4/30/2018 4:02') != 0){index[5] = which(dat$date_time == '4/30/2018 4:02')} else if
+  (which(dat$date_time == '4/30/2018 4:03') != 0){index[5] = which(dat$date_time == '4/30/2018 4:03')} else if
+  (which(dat$date_time == '4/30/2018 4:04') != 0){index[5] = which(dat$date_time == '4/30/2018 4:04')} else if
+  (which(dat$date_time == '4/30/2018 4:05') != 0){index[5] = which(dat$date_time == '4/30/2018 4:05')} else if
+  (which(dat$date_time == '4/30/2018 4:06') != 0){index[5] = which(dat$date_time == '4/30/2018 4:06')} else if
+  (which(dat$date_time == '4/30/2018 4:07') != 0){index[5] = which(dat$date_time == '4/30/2018 4:07')} else if
+  (which(dat$date_time == '4/30/2018 4:08') != 0){index[5] = which(dat$date_time == '4/30/2018 4:08')} else if
+  (which(dat$date_time == '4/30/2018 4:09') != 0){index[5] = which(dat$date_time == '4/30/2018 4:09')} else if
+  (which(dat$date_time == '4/30/2018 4:10') != 0){index[5] = which(dat$date_time == '4/30/2018 4:10')} else if
+  (which(dat$date_time == '4/30/2018 4:11') != 0){index[5] = which(dat$date_time == '4/30/2018 4:11')} else if
+  (which(dat$date_time == '4/30/2018 4:12') != 0){index[5] = which(dat$date_time == '4/30/2018 4:12')} 
+if (which(dat$date_time == '5/1/2018 4:00') != 0){index[6] = which(dat$date_time == '5/1/2018 4:00')} else if
+  (which(dat$date_time == '5/1/2018 4:01') != 0){index[6] = which(dat$date_time == '5/1/2018 4:01')} else if
+  (which(dat$date_time == '5/1/2018 4:02') != 0){index[6] = which(dat$date_time == '5/1/2018 4:02')} else if
+  (which(dat$date_time == '5/1/2018 4:03') != 0){index[6] = which(dat$date_time == '5/1/2018 4:03')} else if
+  (which(dat$date_time == '5/1/2018 4:04') != 0){index[6] = which(dat$date_time == '5/1/2018 4:04')} else if
+  (which(dat$date_time == '5/1/2018 4:05') != 0){index[6] = which(dat$date_time == '5/1/2018 4:05')} else if
+  (which(dat$date_time == '5/1/2018 4:06') != 0){index[6] = which(dat$date_time == '5/1/2018 4:06')} else if
+  (which(dat$date_time == '5/1/2018 4:07') != 0){index[6] = which(dat$date_time == '5/1/2018 4:07')} else if
+  (which(dat$date_time == '5/1/2018 4:08') != 0){index[6] = which(dat$date_time == '5/1/2018 4:08')} else if
+  (which(dat$date_time == '5/1/2018 4:09') != 0){index[6] = which(dat$date_time == '5/1/2018 4:09')} else if
+  (which(dat$date_time == '5/1/2018 4:10') != 0){index[6] = which(dat$date_time == '5/1/2018 4:10')} else if
+  (which(dat$date_time == '5/1/2018 4:11') != 0){index[6] = which(dat$date_time == '5/1/2018 4:11')} else if
+  (which(dat$date_time == '5/1/2018 4:12') != 0){index[6] = which(dat$date_time == '5/1/2018 4:12')} 
+if (which(dat$date_time == '5/2/2018 4:00') != 0){index[7] = which(dat$date_time == '5/2/2018 4:00')} else if
+  (which(dat$date_time == '5/2/2018 4:01') != 0){index[7] = which(dat$date_time == '5/2/2018 4:01')} else if
+  (which(dat$date_time == '5/2/2018 4:02') != 0){index[7] = which(dat$date_time == '5/2/2018 4:02')} else if
+  (which(dat$date_time == '5/2/2018 4:03') != 0){index[7] = which(dat$date_time == '5/2/2018 4:03')} else if
+  (which(dat$date_time == '5/2/2018 4:04') != 0){index[7] = which(dat$date_time == '5/2/2018 4:04')} else if
+  (which(dat$date_time == '5/2/2018 4:05') != 0){index[7] = which(dat$date_time == '5/2/2018 4:05')} else if
+  (which(dat$date_time == '5/2/2018 4:06') != 0){index[7] = which(dat$date_time == '5/2/2018 4:06')} else if
+  (which(dat$date_time == '5/2/2018 4:07') != 0){index[7] = which(dat$date_time == '5/2/2018 4:07')} else if
+  (which(dat$date_time == '5/2/2018 4:08') != 0){index[7] = which(dat$date_time == '5/2/2018 4:08')} else if
+  (which(dat$date_time == '5/2/2018 4:09') != 0){index[7] = which(dat$date_time == '5/2/2018 4:09')} else if
+  (which(dat$date_time == '5/2/2018 4:10') != 0){index[7] = which(dat$date_time == '5/2/2018 4:10')} else if
+  (which(dat$date_time == '5/2/2018 4:11') != 0){index[7] = which(dat$date_time == '5/2/2018 4:11')} else if
+  (which(dat$date_time == '5/2/2018 4:12') != 0){index[7] = which(dat$date_time == '5/2/2018 4:12')} 
+if (which(dat$date_time == '5/3/2018 4:00') != 0){index[8] = which(dat$date_time == '5/3/2018 4:00')} else if
+  (which(dat$date_time == '5/3/2018 4:01') != 0){index[8] = which(dat$date_time == '5/3/2018 4:01')} else if
+  (which(dat$date_time == '5/3/2018 4:02') != 0){index[8] = which(dat$date_time == '5/3/2018 4:02')} else if
+  (which(dat$date_time == '5/3/2018 4:03') != 0){index[8] = which(dat$date_time == '5/3/2018 4:03')} else if
+  (which(dat$date_time == '5/3/2018 4:04') != 0){index[8] = which(dat$date_time == '5/3/2018 4:04')} else if
+  (which(dat$date_time == '5/3/2018 4:05') != 0){index[8] = which(dat$date_time == '5/3/2018 4:05')} else if
+  (which(dat$date_time == '5/3/2018 4:06') != 0){index[8] = which(dat$date_time == '5/3/2018 4:06')} else if
+  (which(dat$date_time == '5/3/2018 4:07') != 0){index[8] = which(dat$date_time == '5/3/2018 4:07')} else if
+  (which(dat$date_time == '5/3/2018 4:08') != 0){index[8] = which(dat$date_time == '5/3/2018 4:08')} else if
+  (which(dat$date_time == '5/3/2018 4:09') != 0){index[8] = which(dat$date_time == '5/3/2018 4:09')} else if
+  (which(dat$date_time == '5/3/2018 4:10') != 0){index[8] = which(dat$date_time == '5/3/2018 4:10')} else if
+  (which(dat$date_time == '5/3/2018 4:11') != 0){index[8] = which(dat$date_time == '5/3/2018 4:11')} else if
+  (which(dat$date_time == '5/3/2018 4:12') != 0){index[8] = which(dat$date_time == '5/3/2018 4:12')} 
+if (which(dat$date_time == '5/4/2018 4:00') != 0){index[9] = which(dat$date_time == '5/4/2018 4:00')} else if
+  (which(dat$date_time == '5/4/2018 4:01') != 0){index[9] = which(dat$date_time == '5/4/2018 4:01')} else if
+  (which(dat$date_time == '5/4/2018 4:02') != 0){index[9] = which(dat$date_time == '5/4/2018 4:02')} else if
+  (which(dat$date_time == '5/4/2018 4:03') != 0){index[9] = which(dat$date_time == '5/4/2018 4:03')} else if
+  (which(dat$date_time == '5/4/2018 4:04') != 0){index[9] = which(dat$date_time == '5/4/2018 4:04')} else if
+  (which(dat$date_time == '5/4/2018 4:05') != 0){index[9] = which(dat$date_time == '5/4/2018 4:05')} else if
+  (which(dat$date_time == '5/4/2018 4:06') != 0){index[9] = which(dat$date_time == '5/4/2018 4:06')} else if
+  (which(dat$date_time == '5/4/2018 4:07') != 0){index[9] = which(dat$date_time == '5/4/2018 4:07')} else if
+  (which(dat$date_time == '5/4/2018 4:08') != 0){index[9] = which(dat$date_time == '5/4/2018 4:08')} else if
+  (which(dat$date_time == '5/4/2018 4:09') != 0){index[9] = which(dat$date_time == '5/4/2018 4:09')} else if
+  (which(dat$date_time == '5/4/2018 4:10') != 0){index[9] = which(dat$date_time == '5/4/2018 4:10')} else if
+  (which(dat$date_time == '5/4/2018 4:11') != 0){index[9] = which(dat$date_time == '5/4/2018 4:11')} else if
+  (which(dat$date_time == '5/4/2018 4:12') != 0){index[9] = which(dat$date_time == '5/4/2018 4:12')} 
+if (which(dat$date_time == '5/5/2018 4:00') != 0){index[10] = which(dat$date_time == '5/5/2018 4:00')} else if
+  (which(dat$date_time == '5/5/2018 4:01') != 0){index[10] = which(dat$date_time == '5/5/2018 4:01')} else if
+  (which(dat$date_time == '5/5/2018 4:02') != 0){index[10] = which(dat$date_time == '5/5/2018 4:02')} else if
+  (which(dat$date_time == '5/5/2018 4:03') != 0){index[10] = which(dat$date_time == '5/5/2018 4:03')} else if
+  (which(dat$date_time == '5/5/2018 4:04') != 0){index[10] = which(dat$date_time == '5/5/2018 4:04')} else if
+  (which(dat$date_time == '5/5/2018 4:05') != 0){index[10] = which(dat$date_time == '5/5/2018 4:05')} else if
+  (which(dat$date_time == '5/5/2018 4:06') != 0){index[10] = which(dat$date_time == '5/5/2018 4:06')} else if
+  (which(dat$date_time == '5/5/2018 4:07') != 0){index[10] = which(dat$date_time == '5/5/2018 4:07')} else if
+  (which(dat$date_time == '5/5/2018 4:08') != 0){index[10] = which(dat$date_time == '5/5/2018 4:08')} else if
+  (which(dat$date_time == '5/5/2018 4:09') != 0){index[10] = which(dat$date_time == '5/5/2018 4:09')} else if
+  (which(dat$date_time == '5/5/2018 4:10') != 0){index[10] = which(dat$date_time == '5/5/2018 4:10')} else if
+  (which(dat$date_time == '5/5/2018 4:11') != 0){index[10] = which(dat$date_time == '5/5/2018 4:11')} else if
+  (which(dat$date_time == '5/5/2018 4:12') != 0){index[10] = which(dat$date_time == '5/5/2018 4:12')} 
+if (which(dat$date_time == '5/6/2018 4:00') != 0){index[11] = which(dat$date_time == '5/6/2018 4:00')} else if
+  (which(dat$date_time == '5/6/2018 4:01') != 0){index[11] = which(dat$date_time == '5/6/2018 4:01')} else if
+  (which(dat$date_time == '5/6/2018 4:02') != 0){index[11] = which(dat$date_time == '5/6/2018 4:02')} else if
+  (which(dat$date_time == '5/6/2018 4:03') != 0){index[11] = which(dat$date_time == '5/6/2018 4:03')} else if
+  (which(dat$date_time == '5/6/2018 4:04') != 0){index[11] = which(dat$date_time == '5/6/2018 4:04')} else if
+  (which(dat$date_time == '5/6/2018 4:05') != 0){index[11] = which(dat$date_time == '5/6/2018 4:05')} else if
+  (which(dat$date_time == '5/6/2018 4:06') != 0){index[11] = which(dat$date_time == '5/6/2018 4:06')} else if
+  (which(dat$date_time == '5/6/2018 4:07') != 0){index[11] = which(dat$date_time == '5/6/2018 4:07')} else if
+  (which(dat$date_time == '5/6/2018 4:08') != 0){index[11] = which(dat$date_time == '5/6/2018 4:08')} else if
+  (which(dat$date_time == '5/6/2018 4:09') != 0){index[11] = which(dat$date_time == '5/6/2018 4:09')} else if
+  (which(dat$date_time == '5/6/2018 4:10') != 0){index[11] = which(dat$date_time == '5/6/2018 4:10')} else if
+  (which(dat$date_time == '5/6/2018 4:11') != 0){index[11] = which(dat$date_time == '5/6/2018 4:11')} else if
+  (which(dat$date_time == '5/6/2018 4:12') != 0){index[11] = which(dat$date_time == '5/6/2018 4:12')} 
+if (which(dat$date_time == '5/7/2018 4:00') != 0){index[12] = which(dat$date_time == '5/7/2018 4:00')} else if
+  (which(dat$date_time == '5/7/2018 4:01') != 0){index[12] = which(dat$date_time == '5/7/2018 4:01')} else if
+  (which(dat$date_time == '5/7/2018 4:02') != 0){index[12] = which(dat$date_time == '5/7/2018 4:02')} else if
+  (which(dat$date_time == '5/7/2018 4:03') != 0){index[12] = which(dat$date_time == '5/7/2018 4:03')} else if
+  (which(dat$date_time == '5/7/2018 4:04') != 0){index[12] = which(dat$date_time == '5/7/2018 4:04')} else if
+  (which(dat$date_time == '5/7/2018 4:05') != 0){index[12] = which(dat$date_time == '5/7/2018 4:05')} else if
+  (which(dat$date_time == '5/7/2018 4:06') != 0){index[12] = which(dat$date_time == '5/7/2018 4:06')} else if
+  (which(dat$date_time == '5/7/2018 4:07') != 0){index[12] = which(dat$date_time == '5/7/2018 4:07')} else if
+  (which(dat$date_time == '5/7/2018 4:08') != 0){index[12] = which(dat$date_time == '5/7/2018 4:08')} else if
+  (which(dat$date_time == '5/7/2018 4:09') != 0){index[12] = which(dat$date_time == '5/7/2018 4:09')} else if
+  (which(dat$date_time == '5/7/2018 4:10') != 0){index[12] = which(dat$date_time == '5/7/2018 4:10')} else if
+  (which(dat$date_time == '5/7/2018 4:11') != 0){index[12] = which(dat$date_time == '5/7/2018 4:11')} else if
+  (which(dat$date_time == '5/7/2018 4:12') != 0){index[12] = which(dat$date_time == '5/7/2018 4:12')} 
+if (which(dat$date_time == '5/8/2018 4:00') != 0){index[13] = which(dat$date_time == '5/8/2018 4:00')} else if
+  (which(dat$date_time == '5/8/2018 4:01') != 0){index[13] = which(dat$date_time == '5/8/2018 4:01')} else if
+  (which(dat$date_time == '5/8/2018 4:02') != 0){index[13] = which(dat$date_time == '5/8/2018 4:02')} else if
+  (which(dat$date_time == '5/8/2018 4:03') != 0){index[13] = which(dat$date_time == '5/8/2018 4:03')} else if
+  (which(dat$date_time == '5/8/2018 4:04') != 0){index[13] = which(dat$date_time == '5/8/2018 4:04')} else if
+  (which(dat$date_time == '5/8/2018 4:05') != 0){index[13] = which(dat$date_time == '5/8/2018 4:05')} else if
+  (which(dat$date_time == '5/8/2018 4:06') != 0){index[13] = which(dat$date_time == '5/8/2018 4:06')} else if
+  (which(dat$date_time == '5/8/2018 4:07') != 0){index[13] = which(dat$date_time == '5/8/2018 4:07')} else if
+  (which(dat$date_time == '5/8/2018 4:08') != 0){index[13] = which(dat$date_time == '5/8/2018 4:08')} else if
+  (which(dat$date_time == '5/8/2018 4:09') != 0){index[13] = which(dat$date_time == '5/8/2018 4:09')} else if
+  (which(dat$date_time == '5/8/2018 4:10') != 0){index[13] = which(dat$date_time == '5/8/2018 4:10')} else if
+  (which(dat$date_time == '5/8/2018 4:11') != 0){index[13] = which(dat$date_time == '5/8/2018 4:11')} else if
+  (which(dat$date_time == '5/8/2018 4:12') != 0){index[13] = which(dat$date_time == '5/8/2018 4:12')} 
+if (which(dat$date_time == '5/8/2018 23:00') != 0){index[14] = which(dat$date_time == '5/8/2018 23:00')} else if
+  (which(dat$date_time == '5/8/2018 23:01') != 0){index[14] = which(dat$date_time == '5/8/2018 23:01')} else if
+  (which(dat$date_time == '5/8/2018 23:02') != 0){index[14] = which(dat$date_time == '5/8/2018 23:02')} else if
+  (which(dat$date_time == '5/8/2018 23:03') != 0){index[14] = which(dat$date_time == '5/8/2018 23:03')} else if
+  (which(dat$date_time == '5/8/2018 23:04') != 0){index[14] = which(dat$date_time == '5/8/2018 23:04')} else if
+  (which(dat$date_time == '5/8/2018 23:05') != 0){index[14] = which(dat$date_time == '5/8/2018 23:05')} else if
+  (which(dat$date_time == '5/8/2018 23:06') != 0){index[14] = which(dat$date_time == '5/8/2018 23:06')} else if
+  (which(dat$date_time == '5/8/2018 23:07') != 0){index[14] = which(dat$date_time == '5/8/2018 23:07')} else if
+  (which(dat$date_time == '5/8/2018 23:08') != 0){index[14] = which(dat$date_time == '5/8/2018 23:08')} else if
+  (which(dat$date_time == '5/8/2018 23:09') != 0){index[14] = which(dat$date_time == '5/8/2018 23:09')} else if
+  (which(dat$date_time == '5/8/2018 23:10') != 0){index[14] = which(dat$date_time == '5/8/2018 23:10')} else if
+  (which(dat$date_time == '5/8/2018 23:11') != 0){index[14] = which(dat$date_time == '5/8/2018 23:11')} else if
+  (which(dat$date_time == '5/8/2018 23:12') != 0){index[14] = which(dat$date_time == '5/9/2018 23:12')} 
+```
+
+```{r, message=FALSE}
+sent_1 <- c(dat$sentiment[index[1]], dat$sentiment[index[2]], dat$sentiment[index[3]], dat$sentiment[index[4]], dat$sentiment[index[5]], dat$sentiment[index[6]], dat$sentiment[index[7]], dat$sentiment[index[8]], dat$sentiment[index[9]], dat$sentiment[index[10]], dat$sentiment[index[11]], dat$sentiment[index[12]], dat$sentiment[index[13]], dat$sentiment[index[14]])
+sent_1 <- as.numeric(sent_1)
+date <- c("4/25", "4/26", "4/27", "4/28", "4/29", "4/30", "5/1", "5/2", "5/3", "5/4", "5/5", "5/6", "5/7", "5/8")
+dat2 <- as.data.frame(cbind(date, sent_1))
+dat2$sent_1 <- as.numeric(as.character(dat2$sent_1))
+
+########## CHANGE CODE FOR DIFFERNT DATA ##########
+price_dat = read.csv('eos.csv', header = FALSE)
+########## ########## ########## ########## ##########
+price_dat$V1 <- as.character(price_dat$V1)
+index_4_25 <- which(price_dat$V1 == '2018-04-25')
+price <- price_dat$V5[index_4_25:(index_4_25+13)]
+dat2$price <- as.numeric(as.character(price))/mean(as.numeric(as.character(price)))
+
+# find voulme:
+########## CHANGE CODE FOR DIFFERNT DATA ##########
+dat1 = read.csv('eos_all_pred.csv')
+########## ########## ########## ########## ##########
+colnames(dat1) <- c("date_time","tweet","sent")
+dat1$date_time = rev(dat1$date_time)#reverse order
+dat1$tweet = rev(dat1$tweet)
+dat1$sent = rev(dat1$sent)
+day <- substr(dat1$date_time, 1, 4)
+for(i in 1:length(day)){
+  if(substr(day[i], 4, 4)=="/"){day[i] <- substr(day[i], 1, 3)}
+}
+tab1 <- as.data.frame(table(day))
+volume <- tab1$Freq
+dat2$volume <- volume/mean(volume)
+dat2$price_total <- as.numeric(as.character(price))
+dat2$volume_total <- volume
+dat2
+sum(dat2$volume_total)
+ggplot(dat2, aes(date, group=1)) +
+  geom_line(aes(y=sent_1, colour="Sentiment"))+ 
+  geom_line(aes(y=price, colour="Price"))+ 
+  geom_line(aes(y=volume, colour="Volume"))+ 
+  scale_color_manual(values = c("red","aquamarine3","deepskyblue1")) +
+########## CHANGE CODE FOR DIFFERNT DATA ##########
+  theme_minimal() + ggtitle("EOS - Sentiment and Volume vs Price") + xlab("Date") + ylab("Price / Sentiment / Volume")
+########## ########## ########## ########## ##########
+
+# correlation
+cor.test(x=dat2$price, y=dat2$volume, method = "pearson")
+cor.test(x=dat2$price, y=dat2$sent_1, method = "pearson")
+cor.test(x=dat2$sent_1, y=dat2$volume, method = "pearson")
+
+library(lmtest)
+#does volume cause price with lag of 1? 
+grangertest(dat2$price ~ dat2$volume, order = 1, data = dat2)
+#does volume cause price with lag of 2? 
+grangertest(dat2$price ~ dat2$volume, order = 2, data = dat2)
+#does volume cause price with lag of 3? 
+grangertest(dat2$price ~ dat2$volume, order = 3, data = dat2)
+#does price cause volume with lag of 1? 
+grangertest(dat2$volume ~ dat2$price, order = 1, data = dat2)
+#does price cause volume with lag of 2? 
+grangertest(dat2$volume ~ dat2$price, order = 2, data = dat2)
+#does price cause volume with lag of 3? 
+grangertest(dat2$volume ~ dat2$price, order = 3, data = dat2)
+
+#does sentiment cause price with lag of 1? 
+grangertest(dat2$price ~ dat2$sent_1, order = 1, data = dat2)
+#does sentiment cause price with lag of 2? 
+grangertest(dat2$price ~ dat2$sent_1, order = 2, data = dat2)
+#does sentiment cause price with lag of 3? 
+grangertest(dat2$price ~ dat2$sent_1, order = 3, data = dat2)
+#does price cause sentiment with lag of 1? 
+grangertest(dat2$sent_1 ~ dat2$price, order = 1, data = dat2)
+#does price cause sentiment with lag of 2? 
+grangertest(dat2$sent_1 ~ dat2$price, order = 2, data = dat2)
+#does price cause sentiment with lag of 3? 
+grangertest(dat2$sent_1 ~ dat2$price, order = 3, data = dat2)
+
+
+
+
+
+```

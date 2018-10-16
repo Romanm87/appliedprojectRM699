@@ -1,0 +1,49 @@
+---
+title: "sent_distr"
+author: "Roman"
+date: "June 17, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# Bar plot of the number of negative, neutral, and positive tweets across all cryptocurrencies
+
+library(ggplot2)
+setwd("~/HU/ANLY 699-90 Applied Project/Sentiment data")
+neg = 0; neu = 0; pos = 0
+dat <- read.csv('cardano_all_pred.csv')
+dat_neg = subset(dat$X0, dat$X0 == 0); neg = neg+length(dat_neg)
+dat_neu = subset(dat$X0, dat$X0 == 1); neu = neu+length(dat_neu)
+dat_pos = subset(dat$X0, dat$X0 == 2); pos = pos+length(dat_pos)
+dat <- read.csv('eos_all_pred.csv')
+dat_neg = subset(dat$X0, dat$X0 == 0); neg = neg+length(dat_neg)
+dat_neu = subset(dat$X0, dat$X0 == 1); neu = neu+length(dat_neu)
+dat_pos = subset(dat$X0, dat$X0 == 2); pos = pos+length(dat_pos)
+dat <- read.csv('eth_all_pred.csv')
+dat_neg = subset(dat$X2, dat$X2 == 0); neg = neg+length(dat_neg)
+dat_neu = subset(dat$X2, dat$X2 == 1); neu = neu+length(dat_neu)
+dat_pos = subset(dat$X2, dat$X2 == 2); pos = pos+length(dat_pos)
+dat <- read.csv('ltc_all_pred.csv')
+dat_neg = subset(dat$X0, dat$X0 == 0); neg = neg+length(dat_neg)
+dat_neu = subset(dat$X0, dat$X0 == 1); neu = neu+length(dat_neu)
+dat_pos = subset(dat$X0, dat$X0 == 2); pos = pos+length(dat_pos)
+dat <- read.csv('ripple_all_pred.csv')
+dat_neg = subset(dat$X0, dat$X0 == 0); neg = neg+length(dat_neg)
+dat_neu = subset(dat$X0, dat$X0 == 1); neu = neu+length(dat_neu)
+dat_pos = subset(dat$X0, dat$X0 == 2); pos = pos+length(dat_pos)
+dat <- read.csv('stellar_all_pred.csv')
+dat_neg = subset(dat$X1, dat$X1 == 0); neg = neg+length(dat_neg)
+dat_neu = subset(dat$X1, dat$X1 == 1); neu = neu+length(dat_neu)
+dat_pos = subset(dat$X1, dat$X1 == 2); pos = pos+length(dat_pos)
+pos+neu+neg
+x = c("Negative", "Neutral", "Positive")
+sent = c(neg, neu, pos)
+col = c("blue", "red", "green")
+dat = as.data.frame(cbind(x, as.numeric(sent), col))
+ggplot(dat, aes(x=x, y=sent, fill=col)) + #scale_fill_brewer(palette="Paired") +
+  geom_bar(stat="identity") + theme_classic() + ylab("Number of tweets")
+
+
+```

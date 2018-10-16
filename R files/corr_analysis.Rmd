@@ -1,0 +1,143 @@
+---
+title: "Sentiment Ethereum"
+author: "Roman"
+date: "June 11, 2018"
+output: html_document
+---
+
+```{r setup, message=FALSE}
+
+### find correlations among sentiment and price for each cryptocurrency
+
+library(ggplot2)
+setwd("~/HU/ANLY 699-90 Applied Project/Sentiment data")
+
+dat <- read.csv('cardano_processed.csv')
+n = round(nrow(dat)/(13*24))
+index <- seq(from=1, to=n*13*24, by=n)
+cardano_hour = matrix(0, length(index), 1)
+for(i in 1:length(index)){
+  cardano_hour[i] = dat$sentiment[index[i]]
+}
+dat <- read.csv('eos_processed.csv')
+n = round(nrow(dat)/(13*24))
+index <- seq(from=1, to=n*13*24, by=n)
+eos_hour = matrix(0, length(index), 1)
+for(i in 1:length(index)){
+  eos_hour[i] = dat$sentiment[index[i]]
+}
+dat <- read.csv('eth_processed.csv')
+n = round(nrow(dat)/(13*24))
+index <- seq(from=1, to=n*13*24, by=n)
+eth_hour = matrix(0, length(index), 1)
+for(i in 1:length(index)){
+  eth_hour[i] = dat$sentiment[index[i]]
+}
+dat <- read.csv('ltc_processed.csv')
+n = round(nrow(dat)/(13*24))
+index <- seq(from=1, to=n*13*24, by=n)
+ltc_hour = matrix(0, length(index), 1)
+for(i in 1:length(index)){
+  ltc_hour[i] = dat$sentiment[index[i]]
+}
+dat <- read.csv('ripple_processed.csv')
+n = round(nrow(dat)/(13*24))
+index <- seq(from=1, to=n*13*24, by=n)
+ripple_hour = matrix(0, length(index), 1)
+for(i in 1:length(index)){
+  ripple_hour[i] = dat$sentiment[index[i]]
+}
+dat <- read.csv('stellar_processed.csv')
+n = round(nrow(dat)/(13*24))
+index <- seq(from=1, to=n*13*24, by=n)
+stellar_hour = matrix(0, length(index), 1)
+for(i in 1:length(index)){
+  stellar_hour[i] = dat$sentiment[index[i]]
+}
+index1 = seq(from=1, to=length(index), by=1)
+matrix = cbind(index1, cardano_hour, eos_hour, eth_hour, ltc_hour, ripple_hour, stellar_hour)
+matrix = matrix[10:nrow(matrix),]
+hour = as.data.frame(matrix)
+hour$index1 <- factor(hour$index1, levels = hour$index1)
+
+ggplot(hour, aes(x= hour$index1, group=1)) +
+  geom_line(aes(y=hour$V2, colour="Cardano"))+ 
+  geom_line(aes(y=hour$V3, colour="EOS"))+
+  geom_line(aes(y=hour$V4, colour="ETH"))+
+  geom_line(aes(y=hour$V5, colour="LTC"))+
+  geom_line(aes(y=hour$V6, colour="Ripple"))+
+  geom_line(aes(y=hour$V7, colour="Stellar"))+ theme_classic() +
+  #theme(axis.text.x=element_blank()) + theme_minimal() +
+  ggtitle("Sentiment all Cryprocurrencies") + xlab("Time") + ylab("Sentiment")
+
+avg_hour = matrix(0, nrow(hour), 1)
+for(i in 1:nrow(hour)){avg_hour[i] = (hour$V2[i]+hour$V3[i]+hour$V4[i]+hour$V5[i]+hour$V6[i]+hour$V7[i])/6}
+hour$avg = avg_hour
+
+ggplot(hour, aes(x= hour$index1, group=1)) +
+  geom_line(aes(y=hour$avg, colour="Average sentiment"))+ 
+  theme_classic() +
+  ggtitle("Sentiment average all Cryprocurrencies") + xlab("Time") + ylab("Sentiment")
+
+
+library(Hmisc)
+rcorr(as.matrix(hour[,2:ncol(hour)]))
+
+
+### Price correlation
+
+date <- c("4/25", "4/26", "4/27", "4/28", "4/29", "4/30", "5/1", "5/2", "5/3", "5/4", "5/5", "5/6", "5/7", "5/8")
+index_4_25 <- which(price_dat$V1 == '2018-04-25')
+index1 = seq(from=1, to=length(date), by=1)
+
+price_dat = read.csv('cardano.csv', header = FALSE)
+price_dat$V1 <- as.character(price_dat$V1)
+index_4_25 <- which(price_dat$V1 == '2018-04-25')
+price <- price_dat$V5[index_4_25:(index_4_25+13)]
+price_cardano <- as.numeric(as.character(price))/mean(as.numeric(as.character(price)))
+price_dat = read.csv('eos.csv', header = FALSE)
+price_dat$V1 <- as.character(price_dat$V1)
+index_4_25 <- which(price_dat$V1 == '2018-04-25')
+price <- price_dat$V5[index_4_25:(index_4_25+13)]
+price_eos <- as.numeric(as.character(price))/mean(as.numeric(as.character(price)))
+price_dat = read.csv('eth.csv', header = FALSE)
+price_dat$V1 <- as.character(price_dat$V1)
+index_4_25 <- which(price_dat$V1 == '2018-04-25')
+price <- price_dat$V5[index_4_25:(index_4_25+13)]
+price_eth <- as.numeric(as.character(price))/mean(as.numeric(as.character(price)))
+price_dat = read.csv('ltc.csv', header = FALSE)
+price_dat$V1 <- as.character(price_dat$V1)
+index_4_25 <- which(price_dat$V1 == '2018-04-25')
+price <- price_dat$V5[index_4_25:(index_4_25+13)]
+price_ltc <- as.numeric(as.character(price))/mean(as.numeric(as.character(price)))
+price_dat = read.csv('ripple.csv', header = FALSE)
+price_dat$V1 <- as.character(price_dat$V1)
+index_4_25 <- which(price_dat$V1 == '2018-04-25')
+price <- price_dat$V5[index_4_25:(index_4_25+13)]
+price_ripple <- as.numeric(as.character(price))/mean(as.numeric(as.character(price)))
+price_dat = read.csv('stellar.csv', header = FALSE)
+price_dat$V1 <- as.character(price_dat$V1)
+index_4_25 <- which(price_dat$V1 == '2018-04-25')
+price <- price_dat$V5[index_4_25:(index_4_25+13)]
+price_stellar <- as.numeric(as.character(price))/mean(as.numeric(as.character(price)))
+
+matrix = cbind(index1, date, price_cardano, price_eos, price_eth, price_ltc, price_ripple, price_stellar)
+price = as.data.frame(matrix)
+
+ggplot(price, aes(x= price$date, group=1)) +
+  geom_line(aes(y=as.numeric(as.character(price$price_cardano)), colour="Cardano"))+ 
+  geom_line(aes(y=as.numeric(as.character(price$price_eos)), colour="EOS"))+
+  geom_line(aes(y=as.numeric(as.character(price$price_eth)), colour="Ethereum"))+
+  geom_line(aes(y=as.numeric(as.character(price$price_ltc)), colour="Litecoin"))+
+  geom_line(aes(y=as.numeric(as.character(price$price_ripple)), colour="Ripple"))+
+  geom_line(aes(y=as.numeric(as.character(price$price_stellar)), colour="Stellar"))+
+  theme_classic() +
+  ggtitle("Price all Cryprocurrencies") + xlab("Time") + ylab("Price (Normalized)")
+
+rcorr(as.matrix(price[,3:ncol(price)]))
+
+
+
+```
+
+
